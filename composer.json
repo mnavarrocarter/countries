@@ -1,7 +1,8 @@
 {
     "name": "mnavarrocarter/countries",
     "license": "MIT",
-    "type": "project",
+    "type": "library",
+    "description": "A library for working with Countries in a object oriented way",
     "authors": [
         {
             "name": "Matías Navarro Carter",
