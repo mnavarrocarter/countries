@@ -2,7 +2,7 @@
 
 namespace MNC\Countries\Bridge\Doctrine\Importer;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use MNC\Countries\Country\Country;
 use MNC\Countries\Country\Currency;
 use MNC\Countries\Country\Language;
@@ -21,23 +21,22 @@ use MNC\Countries\Fetcher\ArrayCountryFetcher;
 class DoctrineCountryImporter
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
      * @var ArrayCountryFetcher
      */
     private $countryFetcher;
+    /**
+     * @var ObjectManager
+     */
+    private $objectManager;
 
     /**
      * DoctrineCountryImporter constructor.
-     * @param EntityManagerInterface $entityManager
-     * @param ArrayCountryFetcher    $countryFetcher
+     * @param ObjectManager $objectManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ObjectManager $objectManager)
     {
-        $this->entityManager = $entityManager;
         $this->countryFetcher = new ArrayCountryFetcher();
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -49,8 +48,8 @@ class DoctrineCountryImporter
         $i = 0;
         foreach ($this->countryFetcher->fetchCountries() as $country) {
             $country = $this->createCountry($country);
-            $this->entityManager->persist($country);
-            $this->entityManager->flush();
+            $this->objectManager->persist($country);
+            $this->objectManager->flush();
             $i++;
 
             if ($callable !== null) {
@@ -122,11 +121,11 @@ class DoctrineCountryImporter
      */
     private function saveOrFetchLanguage(array $language): Language
     {
-        $object = $this->entityManager->find(Language::class, $language['iso639_2']);
+        $object = $this->objectManager->find(Language::class, $language['iso639_2']);
         if (null === $object) {
             $object = LanguageFactory::createFromEntry($language);
-            $this->entityManager->persist($object);
-            $this->entityManager->flush();
+            $this->objectManager->persist($object);
+            $this->objectManager->flush();
         }
         return $object;
     }
@@ -137,11 +136,11 @@ class DoctrineCountryImporter
      */
     private function saveOrFetchRegionalBloc(array $regionBloc): RegionalBloc
     {
-        $object = $this->entityManager->find(RegionalBloc::class, $regionBloc['acronym']);
+        $object = $this->objectManager->find(RegionalBloc::class, $regionBloc['acronym']);
         if (null === $object) {
             $object = RegionalBlocFactory::createFromEntry($regionBloc);
-            $this->entityManager->persist($object);
-            $this->entityManager->flush();
+            $this->objectManager->persist($object);
+            $this->objectManager->flush();
         }
         return $object;
     }
@@ -152,11 +151,11 @@ class DoctrineCountryImporter
      */
     private function saveOrFetchCurrency(array $currency): Currency
     {
-        $object = $this->entityManager->find(Currency::class, $currency['code']);
+        $object = $this->objectManager->find(Currency::class, $currency['code']);
         if (null === $object) {
             $object = CurrencyFactory::createFromEntry($currency);
-            $this->entityManager->persist($object);
-            $this->entityManager->flush();
+            $this->objectManager->persist($object);
+            $this->objectManager->flush();
         }
         return $object;
     }

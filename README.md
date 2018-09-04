@@ -8,7 +8,7 @@ A PHP library for working with Country information as objects, consumed from
 
 Install is done via composer:
 
-    composer require manavarrocarter/countries
+    composer require mnavarrocarter/countries
 
 ## Usage
 

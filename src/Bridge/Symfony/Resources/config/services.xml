@@ -5,9 +5,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="mnc_countries.object_fetcher" class="MNC\Countries\Fetcher\ObjectCountryFetcher"/>
-        <service id="mnc_countries.doctrine_import_command" class="Doctrine\Bundle\DoctrineBundle\Command\Proxy\ImportDoctrineCommand">
-            <argument id="doctrine.orm.entity_manager.default" type="service"/>
-            <tag name="console.command"/>
         </service>
     </services>
 </container>

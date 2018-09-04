@@ -2,6 +2,7 @@
 
 namespace MNC\Countries\Bridge\Symfony\DependencyInjection\Compiler;
 
+use Doctrine\Bundle\DoctrineBundle\Command\Proxy\ImportDoctrineCommand;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use MNC\Countries\Bridge\Doctrine\Repository\DoctrineCountryRepository;
@@ -22,13 +23,17 @@ class DoctrineCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         if ($container->has(ManagerRegistry::class)) {
-
+            // Repository
             $definition = new Definition(DoctrineCountryRepository::class, [
                 new Reference(ManagerRegistry::class)
             ]);
             $container->setDefinition('mnc_countries.orm_country_repository', $definition);
+            $container->setAlias(CountryRepository::class,'mnc_countries.orm_country_repository');
 
-            $container->setAlias(CountryRepository::class, new Reference('mnc_countries.orm_country_repository'));
+            // Command
+            $command = new Definition(ImportDoctrineCommand::class, [new Reference(ManagerRegistry::class)]);
+            $command->addTag('console.command');
+            $container->setDefinition('mnc_countries.doctrine_import_command', $definition);
         }
     }
 }

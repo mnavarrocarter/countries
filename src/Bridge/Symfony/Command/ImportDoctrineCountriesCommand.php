@@ -2,6 +2,7 @@
 
 namespace MNC\Countries\Bridge\Symfony\Command;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use MNC\Countries\Bridge\Doctrine\Importer\DoctrineCountryImporter;
 use MNC\Countries\Country\Country;
@@ -18,20 +19,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ImportDoctrineCountriesCommand extends Command
 {
     public static $defaultName = 'countries:doctrine:import';
-
     /**
-     * @var EntityManagerInterface
+     * @var ManagerRegistry
      */
-    private $entityManager;
+    private $registry;
 
     /**
      * ImportDoctrineCountriesCommand constructor.
-     * @param EntityManagerInterface $entityManager
+     * @param ManagerRegistry $registry
      */
-    public function __construct(EntityManagerInterface $entityManager = null)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct(static::$defaultName);
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
     public function configure(): void
@@ -50,12 +50,7 @@ class ImportDoctrineCountriesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        // To use in doctrine and symfony
-        if ($this->entityManager === null) {
-            $this->entityManager = $this->getHelper('em')->getEntityManager();
-        }
-
-        $importer = new DoctrineCountryImporter($this->entityManager);
+        $importer = new DoctrineCountryImporter($this->registry->getManagerForClass(Country::class));
 
         $number = $importer->import(function (Country $country, $number) use ($io) {
             $io->write(sprintf('%s. %s has been imported...', $number, $country->getName()));
