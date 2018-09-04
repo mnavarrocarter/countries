@@ -78,7 +78,7 @@ class Country
      */
     private $nativeName;
     /**
-     * @var int
+     * @var string
      */
     private $numericCode;
     /**
@@ -295,9 +295,9 @@ class Country
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getNumericCode(): int
+    public function getNumericCode(): string
     {
         return $this->numericCode;
     }

@@ -5,5 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="mnc_countries.object_fetcher" class="MNC\Countries\Fetcher\ObjectCountryFetcher"/>
+        <service id="mnc_countries.in_memory_repository" class="MNC\Countries\Repository\InMemoryCountryRepository">
+            <argument id="MNC\Countries\Fetcher\CountryFecther" type="service"/>
+        </service>
     </services>
 </container>

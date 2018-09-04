@@ -4,15 +4,19 @@ namespace MNC\Countries\Tests\DependencyInjection;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use MNC\Countries\Bridge\Symfony\MNCCountriesBundle;
+use MNC\Countries\Fetcher\CacheCountryFetcherDecorator;
+use MNC\Countries\Fetcher\CountryFetcher;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
-class ServiceWiringTest extends TestCase
+class ServiceWiringTest extends KernelTestCase
 {
     public function tearDown()
     {
@@ -21,31 +25,30 @@ class ServiceWiringTest extends TestCase
         $fs->remove(__DIR__ . '/logs');
     }
 
-    public function testContainerBoots(): void
+    protected static function getKernelClass(): string
     {
-        $container = $this->buildContainer();
-        $this->assertInstanceOf(ContainerInterface::class, $container);
+        return TestKernel::class;
     }
 
-    private function buildContainer(array $config = [])
+    public function testContainerBoots(): void
     {
-        $kernel = new TestKernel($config);
-        $kernel->boot();
+        static::bootKernel();
+        $this->assertInstanceOf(ContainerInterface::class, static::$container);
+    }
 
-        return $kernel->getContainer();
+    public function testDefaultServices()
+    {
+        static::bootKernel();
+        $testContainer = self::$container;
+
+        $fetcher = $testContainer->get(CountryFetcher::class);
+
+        $this->assertInstanceOf(CacheCountryFetcherDecorator::class, $fetcher);
     }
 }
 
 class TestKernel extends Kernel
 {
-    private $config = [];
-
-    public function __construct(array $config = [])
-    {
-        $this->config = $config;
-        parent::__construct('dev', true);
-    }
-
     public function registerBundles()
     {
         return [
@@ -59,7 +62,7 @@ class TestKernel extends Kernel
     {
         $loader->load(function (ContainerBuilder $containerBuilder) {
             $containerBuilder->setParameter('kernel.secret', md5(time()));
-            $containerBuilder->loadFromExtension('mnc_countries', $this->config);
+            $containerBuilder->loadFromExtension('mnc_countries');
             $containerBuilder->loadFromExtension('doctrine');
         });
     }

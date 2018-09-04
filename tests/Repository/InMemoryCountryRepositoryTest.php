@@ -17,7 +17,7 @@ class InMemoryCountryRepositoryTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        static::$repository = InMemoryCountryRepository::createWithCountries(new CacheCountryFetcherDecorator(
+        static::$repository = new InMemoryCountryRepository(new CacheCountryFetcherDecorator(
             new ObjectCountryFetcher(),
             new FilesystemTestCache()
         ));

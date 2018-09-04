@@ -14,87 +14,94 @@ use MNC\Countries\Fetcher\CountryFetcher;
 class InMemoryCountryRepository implements CountryRepository
 {
     /**
-     * @var CountryCollection
+     * @var CountryFetcher
      */
-    private $countries = [];
+    private $countryFetcher;
 
     /**
-     * @param CountryFetcher $countryFetcher
-     * @return InMemoryCountryRepository
+     * @var CountryCollection
      */
-    public static function createWithCountries(CountryFetcher $countryFetcher): InMemoryCountryRepository
-    {
-        $countriesArray = $countryFetcher->fetchCountries();
-
-        return new self($countriesArray);
-    }
+    private $countries ;
 
     /**
      * InMemoryCountryRepository constructor.
-     * @param array $countries
+     * @param CountryFetcher $countryFetcher
      */
-    public function __construct(array $countries = [])
+    public function __construct(CountryFetcher $countryFetcher)
     {
-        $this->countries = new CountryCollection($countries);
-    }
-
-    public function add(Country $country): void
-    {
-        $this->countries->add($country);
+        $this->countryFetcher = $countryFetcher;
     }
 
     public function all(): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->all();
     }
 
     public function byName(string $name): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byName($name);
     }
 
     public function byFullName(string $fullName): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byFullName($fullName);
     }
 
     public function byCode(string $isoCode): Country
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byCode($isoCode);
     }
 
     public function byListOfCodes(array $isoCodes): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byListOfCodes($isoCodes);
     }
 
     public function byCurrencyCode(string $currencyCode): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byCurrencyCode($currencyCode);
     }
 
     public function byLanguageCode(string $languageCode): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byLanguageCode($languageCode);
     }
 
     public function byCapitalCity(string $capitalCity): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byCapitalCity($capitalCity);
     }
 
     public function byCallingCode(string $callingCode): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byCallingCode($callingCode);
     }
 
     public function byRegion(string $region): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byRegion($region);
     }
 
     public function byRegionalBloc(string $regionalBlock): CountryCollection
     {
+        $this->ensureCountriesAreInMemory();
         return $this->countries->byRegionalBloc($regionalBlock);
+    }
+
+    private function ensureCountriesAreInMemory(): void
+    {
+        if ($this->countries === null) {
+            $this->countries = new CountryCollection($this->countryFetcher->fetchCountries());
+        }
     }
 }

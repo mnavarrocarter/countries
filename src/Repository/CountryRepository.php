@@ -14,12 +14,6 @@ use MNC\Countries\Exception\CountryNotFoundException;
 interface CountryRepository
 {
     /**
-     * Adds a Country to the repository.
-     * @param Country $country
-     */
-    public function add(Country $country): void;
-
-    /**
      * Returns all the countries.
      * @return CountryCollection
      */

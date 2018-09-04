@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use MNC\Countries\Bridge\Doctrine\Repository\DoctrineCountryRepository;
 use MNC\Countries\Bridge\Symfony\Command\ImportDoctrineCountriesCommand;
 use MNC\Countries\Repository\CountryRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -30,6 +29,8 @@ class DoctrineCompilerPass implements CompilerPassInterface
             ]);
             $container->setDefinition('mnc_countries.orm_country_repository', $definition);
             $container->setAlias(CountryRepository::class,'mnc_countries.orm_country_repository');
+
+            // TODO: Add xml mappings?
 
             // Command
             $command = new Definition(ImportDoctrineCountriesCommand::class, [new Reference(ManagerRegistry::class)]);

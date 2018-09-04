@@ -78,15 +78,6 @@ class CountryCollection implements \ArrayAccess, \IteratorAggregate, \Countable,
     }
 
     /**
-     * Adds a Country to the repository.
-     * @param Country $country
-     */
-    public function add(Country $country): void
-    {
-        $this->countries[] = $country;
-    }
-
-    /**
      * Returns all the countries.
      * @return CountryCollection
      */
