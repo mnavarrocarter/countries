@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('default')
-                            ->defaultValue('mnc_countries.in_memory')
+                            ->defaultValue('mnc_countries.in_memory_repository')
                         ->end()
                     ->end()
                 ->end()
