@@ -31,6 +31,7 @@ class DoctrineCompilerPass implements CompilerPassInterface
             $container->setAlias(CountryRepository::class,'mnc_countries.orm_country_repository');
 
             // TODO: Add xml mappings?
+            $config = $container->getExtensionConfig('doctrine');
 
             // Command
             $command = new Definition(ImportDoctrineCountriesCommand::class, [new Reference(ManagerRegistry::class)]);

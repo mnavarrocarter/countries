@@ -35,11 +35,13 @@ mnc_countries:
     repository:
         # Alias to the interface
         default: mnc_countries.in_memory_repository
+        # If true, the default one will be DoctrineCountryRepository
+        use_doctrine: true
     fetcher:
         # Alias to the interface
         default: mnc_countries.object_fetcher
-        # If cache decorator is set to true, the alias of the interface
-        # will be an instance of CacheCountryFectherDecorator
+        # If true, the default one will be CacheCountryFectherDecorator
         use_cache_decorator: true
+        # Cache service id. Redis is pretty efficient.
         cache: Psr\SimpleCache\CacheInterface
 ```

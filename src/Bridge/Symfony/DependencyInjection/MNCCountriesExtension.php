@@ -2,9 +2,11 @@
 
 namespace MNC\Countries\Bridge\Symfony\DependencyInjection;
 
+use MNC\Countries\Bridge\Symfony\DependencyInjection\Compiler\DoctrineCompilerPass;
 use MNC\Countries\Fetcher\CacheCountryFetcherDecorator;
 use MNC\Countries\Fetcher\CountryFetcher;
 use MNC\Countries\Repository\CountryRepository;
+use MNC\Countries\Repository\InMemoryCountryRepository;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -38,17 +40,32 @@ class MNCCountriesExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->setAlias(CountryRepository::class, $config['repository']['default']);
-        $container->setAlias(CountryFetcher::class, $config['fetcher']['default']);
-
         if ($config['fetcher']['use_cache_decorator'] === true) {
             $definition = new Definition(CacheCountryFetcherDecorator::class, [
                 new Reference($config['fetcher']['default']),
                 new Reference($config['fetcher']['cache'])
             ]);
 
-            $container->setDefinition('mnc_countries.cacheable_fetcher', $definition);
-            $container->setAlias(CountryFetcher::class, 'mnc_countries.cacheable_fetcher');
+            $defaultFetcher = 'mnc_countries.cacheable_fetcher';
+            $container->setDefinition($defaultFetcher, $definition);
+
+        } else {
+            $defaultFetcher = $config['fetcher']['default'];
         }
+
+        // In Memory Repo
+        $repoDefinition = new Definition(InMemoryCountryRepository::class, [
+            new Reference($defaultFetcher)
+        ]);
+        $container->setDefinition('mnc_countries.in_memory_repository', $repoDefinition);
+
+        // Configure doctrine repo if exists.
+        if ($config['repository']['use_doctrine'] === true) {
+            $container->addCompilerPass(new DoctrineCompilerPass());
+        }
+
+        // Aliases
+        $container->setAlias(CountryFetcher::class, $defaultFetcher);
+        $container->setAlias(CountryRepository::class, $config['repository']['default']);
     }
 }
