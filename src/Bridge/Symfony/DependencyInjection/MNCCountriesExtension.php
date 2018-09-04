@@ -4,6 +4,7 @@ namespace MNC\Countries\Bridge\Symfony\DependencyInjection;
 
 use MNC\Countries\Fetcher\CacheCountryFetcherDecorator;
 use MNC\Countries\Fetcher\CountryFetcher;
+use MNC\Countries\Repository\CountryRepository;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -37,6 +38,7 @@ class MNCCountriesExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
+        $container->setAlias(CountryRepository::class, $config['repository']['default']);
         $container->setAlias(CountryFetcher::class, $config['fetcher']['default']);
 
         if ($config['fetcher']['use_cache_decorator'] === true) {
