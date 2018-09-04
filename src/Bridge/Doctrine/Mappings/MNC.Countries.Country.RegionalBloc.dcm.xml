@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+
+    <entity name="MNC\Countries\Country\RegionalBloc" table="regional_blocs">
+
+        <id name="acronym" type="string" column="acronym"/>
+
+        <field name="name"/>
+        <field name="otherAcronyms" type="json"/>
+        <field name="otherNames" type="json"/>
+
+    </entity>
+
+</doctrine-mapping>

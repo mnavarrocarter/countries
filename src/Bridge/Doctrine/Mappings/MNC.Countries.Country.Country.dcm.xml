@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+
+    <entity name="MNC\Countries\Country\Country" table="countries" repository-class="MNC\Countries\Bridge\Doctrine\Repository\DoctrineCountryRepository">
+        
+        <id name="alpha2Code" type="string" column="alpha2_code"/>
+        
+        <field name="name"/>
+        <field name="topLevelDomain" type="json"/>
+        <field name="alpha3Code" length="3"/>
+        <field name="callingCodes" type="json"/>
+        <field name="capital"/>
+        <field name="altSpellings" type="json"/>
+        <field name="region"/>
+        <field name="subregion"/>
+        <field name="population" type="integer"/>
+        <field name="latlng" type="json"/>
+        <field name="demonym"/>
+        <field name="area" type="integer"/>
+        <field name="gini" type="float"/>
+        <field name="timezones" type="json"/>
+        <field name="borders" type="json"/>
+        <field name="nativeName"/>
+        <field name="numericCode"/>
+        <many-to-many field="currencies" target-entity="MNC\Countries\Country\Currency" fetch="EAGER">
+            <cascade><cascade-all/></cascade>
+            <join-table name="country_currency">
+                <join-columns>
+                    <join-column referenced-column-name="alpha2_code"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column referenced-column-name="code"/>
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+        <many-to-many field="languages" target-entity="MNC\Countries\Country\Language" fetch="EAGER">
+            <cascade><cascade-all/></cascade>
+            <join-table name="country_language">
+                <join-columns>
+                    <join-column referenced-column-name="alpha2_code"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column referenced-column-name="iso639_2"/>
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+        <embedded name="translations" class="MNC\Countries\Country\Translations" column-prefix="translation_"/>
+        <field name="flag"/>
+        <many-to-many field="regionalBlocs" target-entity="MNC\Countries\Country\RegionalBloc" fetch="EAGER">
+            <cascade><cascade-all/></cascade>
+            <join-table name="country_regionalBlocs">
+                <join-columns>
+                    <join-column referenced-column-name="alpha2_code"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column referenced-column-name="acronym"/>
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+        <field name="cioc"/>
+
+    </entity>
+
+</doctrine-mapping>
