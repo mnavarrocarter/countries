@@ -3,7 +3,6 @@
 namespace MNC\Countries\Bridge\Symfony\Command;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManagerInterface;
 use MNC\Countries\Bridge\Doctrine\Importer\DoctrineCountryImporter;
 use MNC\Countries\Country\Country;
 use Symfony\Component\Console\Command\Command;

@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Command\Proxy\ImportDoctrineCommand;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use MNC\Countries\Bridge\Doctrine\Repository\DoctrineCountryRepository;
+use MNC\Countries\Bridge\Symfony\Command\ImportDoctrineCountriesCommand;
 use MNC\Countries\Repository\CountryRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -31,7 +32,7 @@ class DoctrineCompilerPass implements CompilerPassInterface
             $container->setAlias(CountryRepository::class,'mnc_countries.orm_country_repository');
 
             // Command
-            $command = new Definition(ImportDoctrineCommand::class, [new Reference(ManagerRegistry::class)]);
+            $command = new Definition(ImportDoctrineCountriesCommand::class, [new Reference(ManagerRegistry::class)]);
             $command->addTag('console.command');
             $container->setDefinition('mnc_countries.doctrine_import_command', $definition);
         }
